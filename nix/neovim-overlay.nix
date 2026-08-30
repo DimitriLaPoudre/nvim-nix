@@ -45,7 +45,7 @@ let
     telescope-smart-history-nvim # https://github.com/nvim-telescope/telescope-smart-history.nvim
     # ^ telescope and extensions
     # UI
-    mini.tabline
+    mini-tabline
     lualine-nvim # Status line | https://github.com/nvim-lualine/lualine.nvim/
     # ^ UI
     # theme
@@ -61,11 +61,11 @@ let
     # conform.nvim
     # ^ format
     # navigation/editing enhancement plugins
-    mini.ai
-    mini.move
-    mini.pairs
-    mini.surround
-    grug-far.nvim
+    mini-ai
+    mini-move
+    mini-pairs
+    mini-surround
+    grug-far-nvim
     vim-visual-multi
     # ^ navigation/editing enhancement plugins
     # treesitter
@@ -73,22 +73,22 @@ let
     nvim-treesitter-textobjects # https://github.com/nvim-treesitter/nvim-treesitter-textobjects/
     # ^ treesitter
     # QOL
-    neo-tree.nvim
-    mini.animate
-    mini.sessions
+    neo-tree-nvim
+    mini-animate
+    mini-sessions
     # ^ QOL
     # TUI
-    lazygit.nvim
-    lazydocker.nvim
+    lazygit-nvim
+    lazydocker-nvim
     # ^ TUI
     # Useful utilities
     vim-tmux-navigator
-    image.nvim
+    image-nvim
     # nvim-unception # Prevent nested neovim sessions | nvim-unception
     # ^ Useful utilities
     # libraries that other plugins depend on
     plenary-nvim
-    nui.nvim
+    nui-nvim
     nvim-web-devicons
     # mini.icons
     # ^ libraries that other plugins depend on

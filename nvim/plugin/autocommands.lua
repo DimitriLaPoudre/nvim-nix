@@ -71,8 +71,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		local function desc(description)
 			return { noremap = true, silent = true, buffer = bufnr, desc = description }
 		end
-		keymap.set('n', 'gD', vim.lsp.buf.declaration, desc('lsp [g]o to [D]eclaration'))
-		keymap.set('n', 'gd', vim.lsp.buf.definition, desc('lsp [g]o to [d]efinition'))
 		keymap.set('n', 'gt', vim.lsp.buf.type_definition, desc('lsp [g]o to [t]ype definition'))
 		keymap.set('n', 'K', vim.lsp.buf.hover, desc('[lsp] hover'))
 		keymap.set('n', '<leader>pd', peek_definition, desc('lsp [p]eek [d]efinition'))

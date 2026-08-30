@@ -30,84 +30,57 @@ local project_files = function()
 	end
 end
 
----@param picker function the telescope picker to use
-local function grep_current_file_type(picker)
-	local current_file_ext = vim.fn.expand('%:e')
-	local additional_vimgrep_arguments = {}
-	if current_file_ext ~= '' then
-		additional_vimgrep_arguments = {
-			'--type',
-			current_file_ext,
-		}
+--- Toggle hidden & ignored files on the fly for find_files/live_grep
+local function toggle_hidden()
+	local picker = require('telescope.actions.state').get_current_picker()
+	if not picker then
+		return
 	end
-	local conf = require('telescope.config').values
-	picker {
-		vimgrep_arguments = vim.tbl_flatten {
-			conf.vimgrep_arguments,
-			additional_vimgrep_arguments,
-		},
-	}
+	local opts = picker.finder.default_opts or {}
+	opts.hidden = not opts.hidden
+	opts.no_ignore = not opts.no_ignore
+	opts.no_ignore_parent = not opts.no_ignore_parent
+	opts.to_grep_args = function(o)
+		local cmd = { 'rg', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column',
+			'--smart-case' }
+		if o.hidden then
+			cmd[#cmd + 1] = '--hidden'
+		end
+		if o.no_ignore then
+			cmd[#cmd + 1] = '--no-ignore'
+		end
+		return cmd
+	end
+	picker:close()
+	builtin.find_files(opts)
 end
 
---- Grep the string under the cursor, filtering for the current file type
-local function grep_string_current_file_type()
-	grep_current_file_type(builtin.grep_string)
+--- Copy the relative path of the selected entry to the '+' register
+local function copy_relative_path()
+	local entry = require('telescope.actions.state').get_selected_entry()
+	if not entry then
+		return
+	end
+	local path = entry.path or entry.value
+	if path then
+		vim.fn.setreg('+', vim.fn.fnamemodify(path, ':.'))
+	end
 end
-
---- Live grep, filtering for the current file type
-local function live_grep_current_file_type()
-	grep_current_file_type(builtin.live_grep)
-end
-
---- Like live_grep, but fuzzy (and slower)
-local function fuzzy_grep(opts)
-	opts = vim.tbl_extend('error', opts or {}, { search = '', prompt_title = 'Fuzzy grep' })
-	builtin.grep_string(opts)
-end
-
-local function fuzzy_grep_current_file_type()
-	grep_current_file_type(fuzzy_grep)
-end
-
-vim.keymap.set('n', '<leader>tp', function()
-	builtin.find_files()
-end, { desc = '[t]elescope find files - ctrl[p] style' })
-vim.keymap.set('n', '<M-p>', builtin.oldfiles, { desc = '[telescope] old files' })
-vim.keymap.set('n', '<C-g>', builtin.live_grep, { desc = '[telescope] live grep' })
-vim.keymap.set('n', '<leader>tf', fuzzy_grep, { desc = '[t]elescope [f]uzzy grep' })
-vim.keymap.set('n', '<M-f>', fuzzy_grep_current_file_type, { desc = '[telescope] fuzzy grep filetype' })
-vim.keymap.set('n', '<M-g>', live_grep_current_file_type, { desc = '[telescope] live grep filetype' })
-vim.keymap.set(
-	'n',
-	'<leader>t*',
-	grep_string_current_file_type,
-	{ desc = '[t]elescope grep current string [*] in current filetype' }
-)
-vim.keymap.set('n', '<leader>*', builtin.grep_string, { desc = '[telescope] grep current string [*]' })
-vim.keymap.set('n', '<leader>tg', project_files, { desc = '[t]elescope project files [g]' })
-vim.keymap.set('n', '<leader>tc', builtin.quickfix, { desc = '[t]elescope quickfix list [c]' })
-vim.keymap.set('n', '<leader>tq', builtin.command_history, { desc = '[t]elescope command history [q]' })
-vim.keymap.set('n', '<leader>tl', builtin.loclist, { desc = '[t]elescope [l]oclist' })
-vim.keymap.set('n', '<leader>tr', builtin.registers, { desc = '[t]elescope [r]egisters' })
-vim.keymap.set('n', '<leader>tbb', builtin.buffers, { desc = '[t]elescope [b]uffers [b]' })
-vim.keymap.set(
-	'n',
-	'<leader>tbf',
-	builtin.current_buffer_fuzzy_find,
-	{ desc = '[t]elescope current [b]uffer [f]uzzy find' }
-)
-vim.keymap.set('n', '<leader>td', builtin.lsp_document_symbols, { desc = '[t]elescope lsp [d]ocument symbols' })
-vim.keymap.set(
-	'n',
-	'<leader>to',
-	builtin.lsp_dynamic_workspace_symbols,
-	{ desc = '[t]elescope lsp dynamic w[o]rkspace symbols' }
-)
 
 telescope.setup {
 	defaults = {
+		cache_picker = true,
 		path_display = {
 			'truncate',
+		},
+		file_ignore_patterns = {
+			'^%.git/',
+			'^node_modules/',
+			'^build/',
+			'^%.venv/',
+			'^coverage/',
+			'^dist/',
+			'^target/',
 		},
 		layout_strategy = 'vertical',
 		layout_config = layout_config,
@@ -132,7 +105,7 @@ telescope.setup {
 		},
 		color_devicons = true,
 		set_env = { ['COLORTERM'] = 'truecolor' },
-		prompt_prefix = '   ',
+		prompt_prefix = ' ',
 		selection_caret = '  ',
 		entry_prefix = '  ',
 		initial_mode = 'insert',
@@ -147,6 +120,34 @@ telescope.setup {
 			'--smart-case',
 		},
 	},
+	pickers = {
+		find_files = {
+			hidden = true,
+			no_ignore = true,
+			mappings = {
+				i = {
+					['<S-h>'] = toggle_hidden,
+					['<C-y>'] = copy_relative_path,
+				},
+				n = {
+					['<S-h>'] = toggle_hidden,
+					['<C-y>'] = copy_relative_path,
+				},
+			},
+		},
+		live_grep = {
+			hidden = true,
+			no_ignore = true,
+			mappings = {
+				i = {
+					['<S-h>'] = toggle_hidden,
+				},
+				n = {
+					['<S-h>'] = toggle_hidden,
+				},
+			},
+		},
+	},
 	extensions = {
 		fzy_native = {
 			override_generic_sorter = false,
@@ -156,4 +157,54 @@ telescope.setup {
 }
 
 telescope.load_extension('fzy_native')
-telescope.load_extension('smart_history')
+
+-- Top Pickers
+vim.keymap.set('n', '<leader><space>', function()
+	project_files()
+end, { desc = 'Smart Find Files' })
+vim.keymap.set('n', '<leader>/', builtin.current_buffer_fuzzy_find, { desc = 'Fuzzy find in current buffer' })
+vim.keymap.set('n', '<leader>:', builtin.command_history, { desc = 'Command History' })
+
+-- find
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Buffers' })
+vim.keymap.set('n', '<leader>fn', function()
+	builtin.find_files({ cwd = vim.fn.stdpath('config') })
+end, { desc = 'Find Neovim config files' })
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find Files' })
+vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = 'Recent' })
+
+-- Grep
+vim.keymap.set('n', '<leader>sB', function()
+	builtin.live_grep({ grep_open_files = true })
+end, { desc = 'Grep Open Buffers' })
+vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Grep' })
+vim.keymap.set({ 'n', 'x' }, '<leader>sw', builtin.grep_string, { desc = 'Visual selection or word' })
+
+-- search
+vim.keymap.set('n', '<leader>s"', builtin.registers, { desc = 'Registers' })
+vim.keymap.set('n', '<leader>s/', builtin.search_history, { desc = 'Search History' })
+vim.keymap.set('n', '<leader>sa', builtin.autocommands, { desc = 'Autocmds' })
+vim.keymap.set('n', '<leader>sc', builtin.command_history, { desc = 'Command History' })
+vim.keymap.set('n', '<leader>sC', builtin.commands, { desc = 'Commands' })
+vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = 'Diagnostics' })
+vim.keymap.set('n', '<leader>sD', function()
+	builtin.diagnostics({ bufnr = 0 })
+end, { desc = 'Buffer Diagnostics' })
+vim.keymap.set('n', '<leader>sH', builtin.highlights, { desc = 'Highlights' })
+vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = 'Keymaps' })
+vim.keymap.set('n', '<leader>sm', builtin.marks, { desc = 'Marks' })
+vim.keymap.set('n', '<leader>sM', builtin.man_pages, { desc = 'Man Pages' })
+vim.keymap.set('n', '<leader>sq', builtin.quickfix, { desc = 'Quickfix List' })
+vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = 'Resume' })
+vim.keymap.set('n', '<leader>sT', builtin.colorscheme, { desc = 'Colorschemes' })
+
+-- LSP
+vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = 'Goto Definition' })
+vim.keymap.set('n', 'gD', builtin.lsp_declarations, { desc = 'Goto Declaration' })
+vim.keymap.set('n', 'gR', builtin.lsp_references, { desc = 'References' })
+vim.keymap.set('n', 'gI', builtin.lsp_implementations, { desc = 'Goto Implementation' })
+vim.keymap.set('n', 'gy', builtin.lsp_type_definitions, { desc = 'Goto [y]pe Definition' })
+vim.keymap.set('n', '<leader>ss', builtin.lsp_document_symbols, { desc = 'LSP Symbols' })
+vim.keymap.set('n', '<leader>sS', builtin.lsp_workspace_symbols, { desc = 'LSP Workspace Symbols' })
+vim.keymap.set('n', 'gai', builtin.lsp_incoming_calls, { desc = 'Calls Incoming' })
+vim.keymap.set('n', 'gao', builtin.lsp_outgoing_calls, { desc = 'Calls Outgoing' })
