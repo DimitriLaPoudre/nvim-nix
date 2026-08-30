@@ -1,5 +1,5 @@
 if vim.g.did_load_keymaps_plugin then
-	return
+    return
 end
 vim.g.did_load_keymaps_plugin = true
 
@@ -9,6 +9,8 @@ local keymap = vim.keymap
 local diagnostic = vim.diagnostic
 
 keymap.set("i", "<C-c>", "<Esc>", { noremap = true })
+keymap.set("n", "<leader>q", "<cmd>qa<CR>")
+
 
 -- keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 -- keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
@@ -17,16 +19,16 @@ keymap.set("i", "<C-c>", "<Esc>", { noremap = true })
 
 -- Format on save
 local function format_and_save()
-	vim.lsp.buf.format()
-	vim.cmd.write()
+    vim.lsp.buf.format()
+    vim.cmd.write()
 end
 
 keymap.set('n', "<C-s>", function()
-	format_and_save()
+    format_and_save()
 end, { silent = true, desc = 'Format and [s]ave' })
 keymap.set('i', "<C-s>", function()
-	vim.cmd.stopinsert()
-	format_and_save()
+    vim.cmd.stopinsert()
+    format_and_save()
 end, { silent = true, desc = 'Format and [s]ave' })
 
 -- Yank from current position till end of current line
@@ -46,25 +48,25 @@ keymap.set('n', '<leader>bl', ":ls<CR>", { desc = '[b]uffer [l]ist' })
 -- Resize vertical splits
 local toIntegral = math.ceil
 keymap.set('n', '<leader>w+', function()
-	local curWinWidth = api.nvim_win_get_width(0)
-	api.nvim_win_set_width(0, toIntegral(curWinWidth * 3 / 2))
+    local curWinWidth = api.nvim_win_get_width(0)
+    api.nvim_win_set_width(0, toIntegral(curWinWidth * 3 / 2))
 end, { silent = true, desc = 'inc window [w]idth' })
 keymap.set('n', '<leader>w-', function()
-	local curWinWidth = api.nvim_win_get_width(0)
-	api.nvim_win_set_width(0, toIntegral(curWinWidth * 2 / 3))
+    local curWinWidth = api.nvim_win_get_width(0)
+    api.nvim_win_set_width(0, toIntegral(curWinWidth * 2 / 3))
 end, { silent = true, desc = 'dec window [w]idth' })
 keymap.set('n', '<leader>h+', function()
-	local curWinHeight = api.nvim_win_get_height(0)
-	api.nvim_win_set_height(0, toIntegral(curWinHeight * 3 / 2))
+    local curWinHeight = api.nvim_win_get_height(0)
+    api.nvim_win_set_height(0, toIntegral(curWinHeight * 3 / 2))
 end, { silent = true, desc = 'inc window [h]eight' })
 keymap.set('n', '<leader>h-', function()
-	local curWinHeight = api.nvim_win_get_height(0)
-	api.nvim_win_set_height(0, toIntegral(curWinHeight * 2 / 3))
+    local curWinHeight = api.nvim_win_get_height(0)
+    api.nvim_win_set_height(0, toIntegral(curWinHeight * 2 / 3))
 end, { silent = true, desc = 'dec window [h]eight' })
 
 -- Close floating windows [Neovim 0.10 and above]
 keymap.set('n', '<leader>fq', function()
-	vim.cmd('fclose!')
+    vim.cmd('fclose!')
 end, { silent = true, desc = '[f]loating windows: [q]uit/close all' })
 
 -- Remap Esc to switch to normal mode and Ctrl-Esc to pass Esc to terminal
@@ -72,11 +74,11 @@ keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Shortcut for expanding to current buffer's directory in command mode
 keymap.set('c', '%%', function()
-	if fn.getcmdtype() == ':' then
-		return fn.expand('%:h') .. '/'
-	else
-		return '%%'
-	end
+    if fn.getcmdtype() == ':' then
+        return fn.expand('%:h') .. '/'
+    else
+        return '%%'
+    end
 end, { expr = true, desc = "expand to current buffer's directory" })
 
 local severity = diagnostic.severity
@@ -86,43 +88,43 @@ keymap.set('n', "<leader>dq", vim.diagnostic.setloclist, { desc = "Open [d]iagno
 keymap.set('n', '[d', diagnostic.goto_prev, { noremap = true, silent = true, desc = 'previous [d]iagnostic' })
 keymap.set('n', ']d', diagnostic.goto_next, { noremap = true, silent = true, desc = 'next [d]iagnostic' })
 keymap.set('n', '[e', function()
-	diagnostic.goto_prev {
-		severity = severity.ERROR,
-	}
+    diagnostic.goto_prev {
+        severity = severity.ERROR,
+    }
 end, { noremap = true, silent = true, desc = 'previous [e]rror diagnostic' })
 keymap.set('n', ']e', function()
-	diagnostic.goto_next {
-		severity = severity.ERROR,
-	}
+    diagnostic.goto_next {
+        severity = severity.ERROR,
+    }
 end, { noremap = true, silent = true, desc = 'next [e]rror diagnostic' })
 keymap.set('n', '[w', function()
-	diagnostic.goto_prev {
-		severity = severity.WARN,
-	}
+    diagnostic.goto_prev {
+        severity = severity.WARN,
+    }
 end, { noremap = true, silent = true, desc = 'previous [w]arning diagnostic' })
 keymap.set('n', ']w', function()
-	diagnostic.goto_next {
-		severity = severity.WARN,
-	}
+    diagnostic.goto_next {
+        severity = severity.WARN,
+    }
 end, { noremap = true, silent = true, desc = 'next [w]arning diagnostic' })
 keymap.set('n', '[h', function()
-	diagnostic.goto_prev {
-		severity = severity.HINT,
-	}
+    diagnostic.goto_prev {
+        severity = severity.HINT,
+    }
 end, { noremap = true, silent = true, desc = 'previous [h]int diagnostic' })
 keymap.set('n', ']h', function()
-	diagnostic.goto_next {
-		severity = severity.HINT,
-	}
+    diagnostic.goto_next {
+        severity = severity.HINT,
+    }
 end, { noremap = true, silent = true, desc = 'next [h]int diagnostic' })
 
 local function buf_toggle_diagnostics()
-	local filter = { bufnr = api.nvim_get_current_buf() }
-	diagnostic.enable(not diagnostic.is_enabled(filter), filter)
+    local filter = { bufnr = api.nvim_get_current_buf() }
+    diagnostic.enable(not diagnostic.is_enabled(filter), filter)
 end
 
 keymap.set('n', '<leader>td', buf_toggle_diagnostics,
-	{ noremap = true, silent = true, desc = 'lsp [t]oggle inlay [h]ints' })
+    { noremap = true, silent = true, desc = 'lsp [t]oggle inlay [h]ints' })
 
 
 --- Disabled keymaps [enable at your own risk]
