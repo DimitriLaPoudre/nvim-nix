@@ -3,6 +3,9 @@ if vim.g.did_load_completion_plugin then
 end
 vim.g.did_load_completion_plugin = true
 
+vim.o.pumheight = 10
+vim.o.pummaxwidth = 80
+vim.o.pumborder = "bold"
 
 -- C-Space = manually trigger completion
 vim.keymap.set("i", "<C-Space>", function()
@@ -30,6 +33,12 @@ end, { expr = true, desc = "Previous completion" })
 -- Tab = accept
 vim.keymap.set("i", "<Tab>", function()
 	if vim.fn.pumvisible() == 1 then
+		local info = vim.fn.complete_info()
+
+		if info.selected == -1 then
+			return "<C-n><C-y>"
+		end
+
 		return "<C-y>"
 	end
 
