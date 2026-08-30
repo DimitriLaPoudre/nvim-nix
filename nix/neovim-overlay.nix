@@ -76,6 +76,7 @@ let
     neo-tree-nvim
     mini-animate
     mini-sessions
+    render-markdown-nvim
     # ^ QOL
     # TUI
     lazygit-nvim

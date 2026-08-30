@@ -133,7 +133,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			vim.lsp.completion.enable(true, client.id,
 				bufnr, { autotrigger = true, })
 		end
-		-- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
 		local function desc(description)
 			return { noremap = true, silent = true, buffer = bufnr, desc = description }
 		end
