@@ -35,25 +35,26 @@ opt.hlsearch = true   -- Don't highlight search results
 opt.incsearch = true  -- Show matches as you type
 
 -- Visual settings
-opt.termguicolors = true                        -- Enable 24-bit colors
-opt.signcolumn = "yes"                          -- Always show sign column
-opt.showmatch = false                           -- Highlight matching brackets
+opt.termguicolors = true                              -- Enable 24-bit colors
+opt.signcolumn = "yes"                                -- Always show sign column
+opt.showmatch = false                                 -- Highlight matching brackets
 -- opt.matchtime = 2 -- How long to show matching bracket
-opt.cmdheight = 1                               -- Command line height
-opt.showmode = false                            -- Don't show mode in command line
-opt.pumheight = 0                               -- Popup menu height
-opt.pumblend = 0                                -- Popup menu transparency
-opt.winblend = 0                                -- Floating window transparency
+opt.cmdheight = 1                                     -- Command line height
+opt.showmode = false                                  -- Don't show mode in command line
+opt.pumheight = 0                                     -- Popup menu height
+opt.pumblend = 0                                      -- Popup menu transparency
+opt.winblend = 0                                      -- Floating window transparency
 opt.winborder = "bold"
-opt.completeopt = "menu,menuone,noselect,popup" -- Completion options
-opt.autocomplete = true                         -- Enables the overall native completion feature.
-opt.conceallevel = 0                            -- Don't mask any special caracter in styliser file like .md
-opt.confirm = true                              -- Confirm to save changes before exiting modified buffer
-opt.concealcursor = ""                          -- Don't hide cursor line markup
-opt.synmaxcol = 3000                            -- Syntax highlighting limit
-opt.ruler = false                               -- Disable the default ruler (line,row)
-opt.virtualedit = "block"                       -- Allow cursor to move where there is no text in visual block mode
-opt.winminwidth = 5                             -- Minimum window width
+opt.completeopt = "menu,menuone,noselect,popup,fuzzy" -- Completion options
+opt.complete = { '.', 'w', 'b', 'u' }
+opt.autocomplete = true                               -- Enables the overall native completion feature.
+opt.conceallevel = 0                                  -- Don't mask any special caracter in styliser file like .md
+opt.confirm = true                                    -- Confirm to save changes before exiting modified buffer
+opt.concealcursor = ""                                -- Don't hide cursor line markup
+opt.synmaxcol = 3000                                  -- Syntax highlighting limit
+opt.ruler = false                                     -- Disable the default ruler (line,row)
+opt.virtualedit = "block"                             -- Allow cursor to move where there is no text in visual block mode
+opt.winminwidth = 5                                   -- Minimum window width
 
 -- File handling
 opt.backup = false      -- Don't create backup files

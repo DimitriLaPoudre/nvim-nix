@@ -1,3 +1,8 @@
+if vim.g.did_load_lazy_plugin then
+	return
+end
+vim.g.did_load_lazy_plugin = true
+
 vim.keymap.set("n", "<leader>gg", ":LazyGit<CR>", {
 	desc = "Open LazyGit",
 })

@@ -24,12 +24,41 @@ api.nvim_create_autocmd('TermOpen', {
 	end,
 })
 
+-- Vim-cool
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+	callback = function()
+		if vim.fn.getcmdtype():find("[/?]") then
+			vim.opt.hlsearch = true
+		end
+	end,
+})
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+	callback = function()
+		vim.opt.hlsearch = false
+	end,
+})
+--
+
 -- Highlight on yank
 local yank_group = api.nvim_create_augroup('yank', { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = yank_group,
 	callback = function()
 		(vim.hl or vim.highlight).on_yank()
+	end,
+})
+
+
+-- Native completion only in basic buffers
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNew" }, {
+	group = vim.api.nvim_create_augroup("UserAutocomplete", { clear = true }),
+	callback = function(ev)
+		local buftype = vim.bo[ev.buf].buftype
+
+		-- Disable completion in special buffers
+		if buftype ~= "" then
+			vim.bo[ev.buf].autocomplete = false
+		end
 	end,
 })
 
@@ -100,7 +129,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		vim.bo[bufnr].bufhidden = 'hide'
 
 		-- Enable completion triggered by <c-x><c-o>
-		vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
+		if client and client:supports_method('textDocument/completion') then
+			vim.lsp.completion.enable(true, client.id,
+				bufnr, { autotrigger = true, })
+		end
+		-- vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 		local function desc(description)
 			return { noremap = true, silent = true, buffer = bufnr, desc = description }
 		end
@@ -125,6 +158,37 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			end, desc('lsp [t]oggle inlay [h]ints'))
 		end
 	end,
+})
+
+-- Enable native (builtin) treesitter highlighting & folding per filetype.
+-- Uses only Neovim core treesitter (no nvim-treesitter plugin required).
+local native_ts_group = api.nvim_create_augroup('treesitter_native', { clear = true })
+local SKIP_FT = {
+	[''] = true, -- no filetype
+	help = true,
+	qf = true,
+}
+
+api.nvim_create_autocmd('FileType', {
+	group = native_ts_group,
+	callback = function(event)
+		local ft = vim.bo[event.buf].filetype
+		if SKIP_FT[ft] then
+			return
+		end
+		local lang = vim.treesitter.language.get_lang(ft)
+		if not lang then
+			return
+		end
+		-- Only proceed if the parser is already available (no auto-install).
+		if vim.treesitter.language.add(lang) then
+			vim.treesitter.start(event.buf, lang)
+			-- folds, provided by core treesitter
+			vim.wo.foldmethod = 'expr'
+			vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+		end
+	end,
+	desc = 'Enable builtin treesitter highlighting and folding',
 })
 
 -- More examples, disabled by default

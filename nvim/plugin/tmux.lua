@@ -1,3 +1,8 @@
+if vim.g.did_load_tmux_plugin then
+	return
+end
+vim.g.did_load_tmux_plugin = true
+
 vim.keymap.set("n", "<C-h>", "<cmd>TmuxNavigateLeft<CR>")
 vim.keymap.set("n", "<C-j>", "<cmd>TmuxNavigateDown<CR>")
 vim.keymap.set("n", "<C-k>", "<cmd>TmuxNavigateUp<CR>")

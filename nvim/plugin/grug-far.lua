@@ -1,3 +1,8 @@
+if vim.g.did_load_grug_far_plugin then
+	return
+end
+vim.g.did_load_grug_far_plugin = true
+
 local gf = require("grug-far")
 
 gf.setup({})

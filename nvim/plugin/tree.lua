@@ -1,3 +1,8 @@
+if vim.g.did_load_tree_plugin then
+	return
+end
+vim.g.did_load_tree_plugin = true
+
 require("neo-tree").setup({
 	filesystem = {
 		window = {

@@ -1,3 +1,8 @@
+if vim.g.did_load_multi_cursor_plugin then
+	return
+end
+vim.g.did_load_multi_cursor_plugin = true
+
 vim.g.VM_default_mappings = 1
 vim.g.VM_theme = "blue"
 

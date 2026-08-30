@@ -35,8 +35,8 @@ end, { silent = true, desc = 'Format and [s]ave' })
 keymap.set('n', 'Y', 'y$', { silent = true, desc = '[Y]ank to end of line' })
 
 -- Buffer list navigation
-keymap.set('n', '<Tab>', vim.cmd.bprevious, { silent = true, desc = 'previous [b]uffer' })
-keymap.set('n', '<S-Tab>', vim.cmd.bnext, { silent = true, desc = 'next [b]uffer' })
+keymap.set('n', '<Tab>', vim.cmd.bnext, { silent = true, desc = 'next [b]uffer' })
+keymap.set('n', '<S-Tab>', vim.cmd.bprevious, { silent = true, desc = 'previous [b]uffer' })
 keymap.set('n', '[b', vim.cmd.bfirst, { silent = true, desc = 'first [B]uffer' })
 keymap.set('n', ']b', vim.cmd.blast, { silent = true, desc = 'last [B]uffer' })
 

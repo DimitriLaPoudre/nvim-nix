@@ -1,3 +1,8 @@
+if vim.g.did_load_session_plugin then
+	return
+end
+vim.g.did_load_session_plugin = true
+
 require("mini.sessions").setup({
 	-- Whether to read default session if Neovim opened without file arguments
 	autoread = true,
