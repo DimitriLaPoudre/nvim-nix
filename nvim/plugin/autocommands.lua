@@ -81,7 +81,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         keymap.set('n', '<leader>ds', vim.lsp.buf.document_symbol, desc('lsp [d]ocument [s]ymbol'))
         keymap.set('n', '<M-CR>', vim.lsp.buf.code_action, desc('[lsp] code action'))
         keymap.set('n', '<M-l>', vim.lsp.codelens.run, desc('[lsp] run code lens'))
-        keymap.set('n', '<leader>cr', vim.lsp.codelens.refresh, desc('lsp [c]ode lenses [r]efresh'))
         keymap.set('n', 'gr', vim.lsp.buf.references, desc('lsp [g]et [r]eferences'))
         keymap.set('n', '<leader>f', function()
             vim.lsp.buf.format { async = true }

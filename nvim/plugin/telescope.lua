@@ -200,10 +200,10 @@ vim.keymap.set('n', '<leader>sT', builtin.colorscheme, { desc = 'Colorschemes' }
 
 -- LSP
 vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = 'Goto Definition' })
-vim.keymap.set('n', 'gD', builtin.lsp_declarations, { desc = 'Goto Declaration' })
+-- vim.keymap.set('n', 'gD', builtin.lsp_declarations, { desc = 'Goto Declaration' })
 vim.keymap.set('n', 'gR', builtin.lsp_references, { desc = 'References' })
 vim.keymap.set('n', 'gI', builtin.lsp_implementations, { desc = 'Goto Implementation' })
-vim.keymap.set('n', 'gt', builtin.lsp_type_definitions, { desc = 'Goto [t]ype Definition' })
+vim.keymap.set('n', 'gy', builtin.lsp_type_definitions, { desc = 'Goto t[y]pe Definition' })
 vim.keymap.set('n', '<leader>ss', builtin.lsp_document_symbols, { desc = 'LSP Symbols' })
 vim.keymap.set('n', '<leader>sS', builtin.lsp_workspace_symbols, { desc = 'LSP Workspace Symbols' })
 vim.keymap.set('n', 'gai', builtin.lsp_incoming_calls, { desc = 'Calls Incoming' })

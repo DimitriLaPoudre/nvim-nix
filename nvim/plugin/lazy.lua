@@ -1,7 +1,4 @@
-local lg = require('lazygit')
-lg.setup()
-
-vim.keymap.set("n", "<leader>gg", ":LazyGit", {
+vim.keymap.set("n", "<leader>gg", ":LazyGit<CR>", {
     desc = "Open LazyGit",
 })
 
