@@ -25,3 +25,17 @@ require("mini.sessions").setup({
 	-- Whether to print session path after action
 	verbose = { read = false, write = true, delete = true },
 })
+
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+	callback = function()
+		MiniSessions.write("last")
+	end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+	nested = true,
+	callback = function()
+		MiniSessions.read("last")
+	end,
+})

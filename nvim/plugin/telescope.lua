@@ -9,15 +9,19 @@ local actions = require('telescope.actions')
 local builtin = require('telescope.builtin')
 
 local layout_config = {
-    vertical = {
-        width = function(_, max_columns)
-            return math.floor(max_columns * 0.99)
-        end,
-        height = function(_, _, max_lines)
-            return math.floor(max_lines * 0.99)
-        end,
-        prompt_position = 'bottom',
-        preview_cutoff = 0,
+    -- Mimic snacks picker: centered, compact window with a box border
+    horizontal = {
+        width = 0.9,
+        height = 0.8,
+        preview_width = 0.5,
+        prompt_position = 'top',
+        anchor = 'center',
+        borderchars = {
+            { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+            { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+            { '─', '│', '─', '│', '─', '─', '─', '─' },
+            { '─', '│', '─', '│', '─', '─', '─', '─' },
+        },
     },
 }
 
@@ -82,7 +86,7 @@ telescope.setup {
             '^dist/',
             '^target/',
         },
-        layout_strategy = 'vertical',
+        layout_strategy = 'horizontal',
         layout_config = layout_config,
         mappings = {
             i = {
@@ -157,6 +161,25 @@ telescope.setup {
 }
 
 telescope.load_extension('fzy_native')
+
+-- Visual tweaks to resemble snacks picker
+local function get_hl(name)
+    local h = vim.api.nvim_get_hl(0, { name = name, link = false })
+    return h
+end
+
+local comment = get_hl('Comment').fg
+local normal = get_hl('Normal').fg
+local visual_bg = get_hl('Visual').bg
+local statusline = get_hl('StatusLine').bg
+
+vim.api.nvim_set_hl(0, 'TelescopeBorder', { fg = comment, bg = 'NONE' })
+vim.api.nvim_set_hl(0, 'TelescopePromptTitle', { fg = normal, bg = statusline, bold = true })
+vim.api.nvim_set_hl(0, 'TelescopePromptPrefix', { fg = normal, bg = 'NONE' })
+vim.api.nvim_set_hl(0, 'TelescopeResultsTitle', { fg = comment })
+vim.api.nvim_set_hl(0, 'TelescopePreviewTitle', { fg = comment })
+vim.api.nvim_set_hl(0, 'TelescopeSelection', { bg = visual_bg })
+vim.api.nvim_set_hl(0, 'TelescopeSelectionCaret', { fg = normal, bg = visual_bg, bold = true })
 
 -- Top Pickers
 vim.keymap.set('n', '<leader><space>', function()
