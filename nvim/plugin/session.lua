@@ -3,15 +3,17 @@ if vim.g.did_load_session_plugin then
 end
 vim.g.did_load_session_plugin = true
 
-require("mini.sessions").setup({
+local sessions = require("mini.sessions")
+
+sessions.setup({
 	-- Whether to read default session if Neovim opened without file arguments
-	autoread = true,
+	autoread = false,
 
 	-- Whether to write currently read session before leaving it
-	autowrite = true,
+	autowrite = false,
 
 	-- Directory where global sessions are stored (use `''` to disable)
-	-- directory = --<"session" subdir of user data directory from |stdpath()|>,
+	directory = vim.fn.stdpath("data") .. "/sessions",
 
 	-- File for local session (use `''` to disable)
 	-- file = 'Session.vim',
@@ -32,15 +34,21 @@ require("mini.sessions").setup({
 })
 
 
+local function session_name()
+	return vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+end
+
 vim.api.nvim_create_autocmd("VimLeavePre", {
 	callback = function()
-		MiniSessions.write("last")
+		sessions.write(session_name())
 	end,
 })
 
 vim.api.nvim_create_autocmd("VimEnter", {
 	nested = true,
 	callback = function()
-		MiniSessions.read("last")
+		if vim.fn.argc() == 0 then
+			sessions.read(session_name())
+		end
 	end,
 })
