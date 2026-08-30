@@ -134,6 +134,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
 				bufnr, { autotrigger = true, })
 		end
 
+		vim.api.nvim_create_autocmd("InsertCharPre", {
+			buffer = bufnr,
+			callback = function()
+				if vim.v.char:match("[%w_]") then
+					vim.schedule(function()
+						vim.lsp.completion.get()
+					end)
+				end
+			end,
+		})
+
 		local function desc(description)
 			return { noremap = true, silent = true, buffer = bufnr, desc = description }
 		end
