@@ -149,7 +149,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			return { noremap = true, silent = true, buffer = bufnr, desc = description }
 		end
 		keymap.set('n', 'gt', vim.lsp.buf.type_definition, desc('lsp [g]o to [t]ype definition'))
-		keymap.set('n', 'K', vim.lsp.buf.hover, desc('[lsp] hover'))
+		keymap.set('n', 'K', function()
+			vim.lsp.buf.hover({
+				border = "rounded",
+				max_width = 80,
+				max_height = 20,
+			})
+		end, desc('[lsp] hover'))
 		keymap.set('n', '<leader>pd', peek_definition, desc('lsp [p]eek [d]efinition'))
 		keymap.set('n', '<leader>pt', peek_type_definition, desc('lsp [p]eek [t]ype definition'))
 		keymap.set('n', 'gi', vim.lsp.buf.implementation, desc('lsp [g]o to [i]mplementation'))

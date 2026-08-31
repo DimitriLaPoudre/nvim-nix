@@ -3,10 +3,6 @@ if vim.g.did_load_completion_plugin then
 end
 vim.g.did_load_completion_plugin = true
 
-vim.o.pumheight = 10
-vim.o.pummaxwidth = 80
-vim.o.pumborder = "bold"
-
 -- C-Space = manually trigger completion
 vim.keymap.set("i", "<C-Space>", function()
 	vim.lsp.completion.get()
